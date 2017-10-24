@@ -1,6 +1,7 @@
 from numpy import *
-from plotBoundary import *
-import pylab as pl
+# from plotBoundary import *
+# import pylab as pl
+import matplotlib.pyplot as plt
 from Problem21 import run_SVM_kernel, linear_kernel, RBF_kernel
 from lr_test import *
 # import data
@@ -31,8 +32,8 @@ normalized_test_X = normalize(test_X)
 
 C = 1
 alpha_threshold = 10**(-8)
-kernel_func = linear_kernel
-# kernel_func = RBF_kernel(0.1)
+# kernel_func = linear_kernel
+kernel_func = RBF_kernel(100)
 train_Y_np = array(train_Y).reshape((len(train_Y), 1))
 w0, wx_product, sv_indices, etas, alphas, savedX, savedY = run_SVM_kernel(C, alpha_threshold, normalized_train_X, train_Y_np, None, kernel_func)
 
@@ -45,18 +46,16 @@ for i in range(savedY.shape[0]):
         alphas_indices_nonzero.append(i)
 
 def predictSVM(x):
-    # return np.array([-1 if sum([alphas[n,0] * savedY[n, 0] * kernel_func(el, savedX[n,:]) for n in range(savedY.shape[0])]) + w0 <= 0 else 1 for el in x])
-    return np.array([-1 if sum([alphas[n, 0] * savedY[n, 0] * kernel_func(el, savedX[n, :]) for n in alphas_indices_nonzero]) + w0 <= 0 else 1 for el in x])
-# plot training results
-plotDecisionBoundary(normalized_train_X, train_Y, predictSVM, [-1, 0, 1], title = 'SVM Train')
+      return np.array([-1 if sum([alphas[n, 0] * savedY[n, 0] * kernel_func(el, savedX[n, :]) for n in alphas_indices_nonzero]) + w0 <= 0 else 1 for el in x])
 
+# Now we have the decision boundary, let's see how we perform on the test set
 
-print '======Validation======'
-# load data from csv files
-validate = loadtxt('data/data'+name+'_validate.csv')
-X = validate[:, 0:2]
-Y = validate[:, 2:3]
-# plot validation results
-plotDecisionBoundary(X, Y, predictSVM, [-1, 0, 1], title = 'SVM Validate')
-pl.show()
+test_labels_svm = predictSVM(normalized_test_X)
 
+print(test_labels_svm)
+misclassified = [i for i in range(len(test_Y)) if (i < 150 and test_labels_svm[i] == -1) or (i >= 150 and test_labels_svm[i] == 1)]
+print("MISCLASSIFIED: ", misclassified)
+
+for img_idx in misclassified:
+    plt.imshow(normalized_test_X[img_idx].reshape((28,28)))
+    plt.show()
