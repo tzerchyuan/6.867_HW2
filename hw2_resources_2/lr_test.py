@@ -47,7 +47,7 @@ def sgd(X,Y, thresh, learning_rate, reg_factor, norm):
         first_loss_term = -1.0/(1.0 + second_loss_term)
         third_loss_term = -1*Y[n]*X[n]
         inner_reg_term = X[n]/np.linalg.norm(old_theta[1:])
-        reg_term = norm*reg_factor*(inner_reg_term)m)
+        reg_term = norm*reg_factor*(inner_reg_term)
         gradient = -first_loss_term*second_loss_term*third_loss_term + reg_term
         change = learning_rate*gradient
         new_theta = old_theta - change
@@ -75,14 +75,14 @@ def transform_x(x):
     return transformed_X
 
 # # parameters
-name = '1'
-print '======Training======'
-# load data from csv files
-train = loadtxt('data/data'+name+'_train.csv')
-X = train[:,0:2]
-transformed_X = transform_x(X)
-Y = train[:,2:3]
-new_y = []
+# name = '1'
+# print '======Training======'
+# # load data from csv files
+# train = loadtxt('data/data'+name+'_train.csv')
+# X = train[:,0:2]
+# transformed_X = transform_x(X)
+# Y = train[:,2:3]
+# new_y = []
 # for i in range(len(Y)):
 #     new_y.append(Y[i][0])
 #
@@ -96,7 +96,7 @@ new_y = []
 
 #
 # # Carry out training.
-w = sgd(transformed_X, Y, 0.00001, 0.01, 10, 1)
+# w = sgd(transformed_X, Y, 0.00001, 0.01, 10, 1)
 # #
 # Define the predictLR(x) function, which uses trained parameters
 def predictLR(x):
@@ -107,8 +107,8 @@ def predictLR(x):
     return 0
 
 # plot training results
-plotDecisionBoundary(X, Y, predictLR, [0.5], title = 'LR Train with L1 regularization and C=10')
-pl.show()
+# plotDecisionBoundary(X, Y, predictLR, [0.5], title = 'LR Train with L1 regularization and C=10')
+# pl.show()
 #
 # print '======Validation======'
 # # load data from csv files
