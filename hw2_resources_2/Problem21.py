@@ -319,7 +319,7 @@ def run_SVM_kernel(C, alpha_threshold, XT, Y, kernel_mat, kernel_func):
 def linear_kernel(x,y):
     return np.dot(x,y)
 
-def RBF_kernel(sigma):
-    return lambda x, y: np.exp(-0.5*np.linalg.norm((x-y))**2/sigma**2)
+def RBF_kernel(gamma):
+    return lambda x, y: np.exp(-1*gamma*np.linalg.norm((x-y))**2)
 
 # w0, wx_product, sv_indices, etas, alphas = run_SVM_kernel(C, alpha_threshold, X, Y, None, linear_kernel)

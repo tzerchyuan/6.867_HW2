@@ -4,25 +4,44 @@ from numpy import *
 import matplotlib.pyplot as plt
 from Problem21 import run_SVM_kernel, linear_kernel, RBF_kernel
 from lr_test import *
+
 # import data
+train_0 = loadtxt('data/mnist_digit_0.csv')
+train_1 = loadtxt('data/mnist_digit_1.csv')
+train_2 = loadtxt('data/mnist_digit_2.csv')
 train_3 = loadtxt('data/mnist_digit_3.csv')
+train_4 = loadtxt('data/mnist_digit_4.csv')
 train_5 = loadtxt('data/mnist_digit_5.csv')
+train_6 = loadtxt('data/mnist_digit_6.csv')
+train_7 = loadtxt('data/mnist_digit_7.csv')
+train_8 = loadtxt('data/mnist_digit_8.csv')
+train_9 = loadtxt('data/mnist_digit_9.csv')
+X_0 = train_0[:500]
+X_1 = train_1[:500]
+X_2 = train_2[:500]
 X_3 = train_3[:500]
+X_4 = train_4[:500]
 X_5 = train_5[:500]
+X_6 = train_6[:500]
+X_7 = train_7[:500]
+X_8 = train_8[:500]
+X_9 = train_9[:500]
 
-train_X = concatenate((X_3[:200], X_5[:200]))
-train_Y = [1]*200 + [-1]*200
-validate_X = concatenate((X_3[200:350],X_5[200:350]))
-validate_Y = [1]*150 + [-1]*150
+train_X = concatenate((X_0[:200], X_2[:200],X_4[:200],X_6[:200],X_8[:200],X_1[:200],X_3[:200],X_5[:200],X_7[:200],X_9[:200]))
+train_Y = [1] * 1000 + [-1] * 1000
+validate_X = concatenate((X_0[200:350], X_2[200:350],X_4[200:350],X_6[200:350],X_8[200:350],X_1[200:350],X_3[200:350],X_5[200:350],X_7[200:350],X_9[200:350]))
+validate_Y = [1] * 750 + [-1] * 750
 
-test_X = concatenate((X_3[350:500], X_5[350:500]))
-test_Y = [1]*150 + [-1]*150
+test_X = concatenate((X_0[350:500], X_2[350:500],X_4[350:500],X_6[350:500],X_8[350:500],X_1[350:500],X_3[350:500],X_5[350:500],X_7[350:500],X_9[350:500]))
+test_Y = [1] * 750 + [-1] * 750
+
 
 # create corresponding sets with normalize pixels
 def normalize(X):
     # returns normalized datasets
     new_X = copy.deepcopy(X)
-    return new_X*2/255-1
+    return new_X * 2 / 255 - 1
+
 
 normalized_train_X = normalize(train_X)
 normalized_validate_X = normalize(validate_X)
@@ -92,7 +111,7 @@ for C in C_range:
 
     validation_labels_svm = predictSVM(normalized_validate_X)
 
-    misclassified = [i for i in range(len(validate_Y)) if (i < 150 and validation_labels_svm[i] == -1) or (i >= 150 and validation_labels_svm[i] == 1)]
+    misclassified = [i for i in range(len(validate_Y)) if (i < 750 and validation_labels_svm[i] == -1) or (i >= 750 and validation_labels_svm[i] == 1)]
 
     print("-------------------------------------------------------")
     print((C, alpha_threshold))
@@ -127,7 +146,7 @@ def predictSVM(x):
 test_labels_svm = predictSVM(normalized_test_X)
 
 # print(test_labels_svm)
-misclassified = [i for i in range(len(test_Y)) if (i < 150 and test_labels_svm[i] == -1) or (i >= 150 and test_labels_svm[i] == 1)]
+misclassified = [i for i in range(len(test_Y)) if (i < 750 and test_labels_svm[i] == -1) or (i >= 750 and test_labels_svm[i] == 1)]
 print("MISCLASSIFIED TEST: ", misclassified)
 
 for img_idx in misclassified:
@@ -164,7 +183,7 @@ for C in C_range:
 
     validation_labels_svm = predictSVM(validate_X)
 
-    misclassified = [i for i in range(len(validate_Y)) if (i < 150 and validation_labels_svm[i] == -1) or (i >= 150 and validation_labels_svm[i] == 1)]
+    misclassified = [i for i in range(len(validate_Y)) if (i < 750 and validation_labels_svm[i] == -1) or (i >= 750 and validation_labels_svm[i] == 1)]
 
     print("-------------------------------------------------------")
     print(C)
@@ -200,7 +219,7 @@ def predictSVM(x):
 test_labels_svm = predictSVM(test_X)
 
 # print(test_labels_svm)
-misclassified = [i for i in range(len(test_Y)) if (i < 150 and test_labels_svm[i] == -1) or (i >= 150 and test_labels_svm[i] == 1)]
+misclassified = [i for i in range(len(test_Y)) if (i < 750 and test_labels_svm[i] == -1) or (i >= 750 and test_labels_svm[i] == 1)]
 print("MISCLASSIFIED TEST: ", misclassified)
 
 for img_idx in misclassified:
@@ -240,7 +259,7 @@ for C in C_range:
 
         validation_labels_svm = predictSVM(normalized_validate_X)
 
-        misclassified = [i for i in range(len(validate_Y)) if (i < 150 and validation_labels_svm[i] == -1) or (i >= 150 and validation_labels_svm[i] == 1)]
+        misclassified = [i for i in range(len(validate_Y)) if (i < 750 and validation_labels_svm[i] == -1) or (i >= 750 and validation_labels_svm[i] == 1)]
 
         print("-------------------------------------------------------")
         print((C, gamma))
@@ -277,7 +296,7 @@ def predictSVM(x):
 test_labels_svm = predictSVM(normalized_test_X)
 
 # print(test_labels_svm)
-misclassified = [i for i in range(len(test_Y)) if (i < 150 and test_labels_svm[i] == -1) or (i >= 150 and test_labels_svm[i] == 1)]
+misclassified = [i for i in range(len(test_Y)) if (i < 750 and test_labels_svm[i] == -1) or (i >= 750 and test_labels_svm[i] == 1)]
 print("MISCLASSIFIED TEST: ", misclassified)
 
 for img_idx in misclassified:
@@ -318,7 +337,7 @@ for C in C_range:
 
         validation_labels_svm = predictSVM(validate_X)
 
-        misclassified = [i for i in range(len(validate_Y)) if (i < 150 and validation_labels_svm[i] == -1) or (i >= 150 and validation_labels_svm[i] == 1)]
+        misclassified = [i for i in range(len(validate_Y)) if (i < 750 and validation_labels_svm[i] == -1) or (i >= 750 and validation_labels_svm[i] == 1)]
 
         print("-------------------------------------------------------")
         print((C, gamma))
@@ -355,7 +374,7 @@ def predictSVM(x):
 test_labels_svm = predictSVM(test_X)
 
 # print(test_labels_svm)
-misclassified = [i for i in range(len(test_Y)) if (i < 150 and test_labels_svm[i] == -1) or (i >= 150 and test_labels_svm[i] == 1)]
+misclassified = [i for i in range(len(test_Y)) if (i < 750 and test_labels_svm[i] == -1) or (i >= 750 and test_labels_svm[i] == 1)]
 print("MISCLASSIFIED TEST: ", misclassified)
 
 for img_idx in misclassified:

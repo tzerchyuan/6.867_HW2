@@ -16,10 +16,10 @@ Y = train[:, 2:3].copy()
 # Carry out training, primal and/or dual
 C = 1
 alpha_threshold = 10**(-4)
-kernel_func = RBF_kernel(.1)
+kernel_func = RBF_kernel(2)
 # kernel_func = linear_kernel
 w0, wx_product, sv_indices, etas, alphas, savedX, savedY = run_SVM_kernel(C, alpha_threshold, X, Y, None, kernel_func)
-print("W0: ", w0)
+# print("W0: ", w0)
 
 alphas_indices_nonzero = []
 
