@@ -167,21 +167,22 @@ def one_point_two(C, dataset):
                 datamap[name][reg].append(l.score(test_X, test_Y))
     return datamap
 
-# datamap = one_point_two([100.0, 10.0, 1.0, 0.1, 0.5, 0.01], ['1', '2', '3', '4'])
-#
-# x = [0,1,2,3,4,5]
-# my_ticks = ['0.01', '0.1', '1.0', '2.0', '10.0', '100']
-# plt.xticks(x, my_ticks)
-# plt.plot(x, datamap['1']['l1'], label='dataset1 L1')
-# plt.plot(x, datamap['1']['l2'], label='dataset1 L2')
-# plt.plot(x, datamap['2']['l1'], label='dataset2 L1')
-# plt.plot(x, datamap['2']['l2'], label='dataset2 L2')
-# plt.plot(x, datamap['3']['l1'], label='dataset3 L1')
-# plt.plot(x, datamap['3']['l2'], label='dataset3 L2')
-# plt.plot(x, datamap['4']['l1'], label='dataset4 L1')
-# plt.plot(x, datamap['4']['l2'], label='dataset4 L2')
-# plt.xlabel('lambda')
-# plt.ylabel('test_accuracy')
-# plt.title('Test accuracy with different values of lambda')
-# plt.legend(bbox_to_anchor=(0.5, 0.25), loc=0, borderaxespad=0.01, fontsize='small')
-# plt.show()
+def plots():
+    datamap = one_point_two([100.0, 10.0, 1.0, 0.1, 0.5, 0.01], ['1', '2', '3', '4'])
+
+    x = [0,1,2,3,4,5]
+    my_ticks = ['0.01', '0.1', '1.0', '2.0', '10.0', '100']
+    plt.xticks(x, my_ticks)
+    plt.plot(x, datamap['1']['l1'], label='dataset1 L1')
+    plt.plot(x, datamap['1']['l2'], label='dataset1 L2')
+    plt.plot(x, datamap['2']['l1'], label='dataset2 L1')
+    plt.plot(x, datamap['2']['l2'], label='dataset2 L2')
+    plt.plot(x, datamap['3']['l1'], label='dataset3 L1')
+    plt.plot(x, datamap['3']['l2'], label='dataset3 L2')
+    plt.plot(x, datamap['4']['l1'], label='dataset4 L1')
+    plt.plot(x, datamap['4']['l2'], label='dataset4 L2')
+    plt.xlabel('lambda')
+    plt.ylabel('test_accuracy')
+    plt.title('Test accuracy with different values of lambda')
+    plt.legend(bbox_to_anchor=(0.5, 0.25), loc=0, borderaxespad=0.01, fontsize='small')
+    plt.show()
