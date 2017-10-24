@@ -69,7 +69,10 @@ def new_sgd(X,Y, thresh, learning_rate, reg_factor, norm):
     while (epoch < 30):
         old_theta = copy.deepcopy(new_theta)
         # change for w
-        second_loss_term = math.exp(-Y[n]*np.dot(old_theta[1:], X[n][1:]))
+        try:
+            second_loss_term = math.exp(-Y[n]*np.dot(old_theta[1:], X[n][1:]))
+        except:
+            second_loss_term = 0
         first_loss_term = -1.0/(1.0 + second_loss_term)
         third_loss_term = -1*Y[n]*X[n][1:]
         if norm == 2:

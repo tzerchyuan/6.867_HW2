@@ -44,7 +44,7 @@ def predict_lr(x, w):
     return np.array(result)
 
 normalized_train_X_lr = transform_x(normalized_train_X)
-w = new_sgd(normalized_train_X_lr, train_Y, 0.001, 0.02, 2, 2)
+w = new_sgd(normalized_train_X_lr, train_Y, 0.001, 0.02, 1, 2)
 test_labels_lr = predict_lr(normalized_test_X, w)
 
 
@@ -59,9 +59,10 @@ misclassified = [i for i in range(len(test_Y)) if (i < 150 and test_labels_lr[i]
 print("MISCLASSIFIED: ", misclassified)
 print(len(misclassified))
 
-for img_idx in misclassified:
-    plt.imshow(normalized_test_X[img_idx].reshape((28,28)))
-    plt.show()
+if len(misclassified) <10:
+    for img_idx in misclassified:
+        plt.imshow(normalized_test_X[img_idx].reshape((28,28)))
+        plt.show()
 
 ######################### SVM ############################################
 C = 1
