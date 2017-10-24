@@ -41,7 +41,7 @@ def sgd(X,Y, thresh, learning_rate, reg_factor, norm):
     new_theta = np.array([0.5] * len(X[0]))
     n = 0
     epoch = 0
-    while (epoch < 50):
+    while (epoch < 30):
         old_theta = copy.deepcopy(new_theta)
         second_loss_term = math.exp(-Y[n]*np.dot(old_theta, X[n]))
         first_loss_term = -1.0/(1.0 + second_loss_term)
@@ -60,6 +60,48 @@ def sgd(X,Y, thresh, learning_rate, reg_factor, norm):
         #     asd
     return new_theta
 
+def new_sgd(X,Y, thresh, learning_rate, reg_factor, norm):
+    samples = len(X)
+    old_theta = np.array([0] * len(X[0]))
+    new_theta = np.array([0.5] * len(X[0]))
+    n = 0
+    epoch = 0
+    while (epoch < 30):
+        old_theta = copy.deepcopy(new_theta)
+        # change for w
+        second_loss_term = math.exp(-Y[n]*np.dot(old_theta[1:], X[n][1:]))
+        first_loss_term = -1.0/(1.0 + second_loss_term)
+        third_loss_term = -1*Y[n]*X[n][1:]
+        if norm == 2:
+            inner_reg_term = X[n][1:]/np.linalg.norm(old_theta[1:])
+        elif norm ==1:
+            inner_reg_term = X[n][1:]/np.linalg.norm(old_theta[1:])
+        reg_term = norm*reg_factor*(inner_reg_term)
+        gradient = -first_loss_term*second_loss_term*third_loss_term + reg_term
+        # print('first_loss_term', first_loss_term)
+        # print('second_loss_term', second_loss_term)
+        # print('third_loss_term', third_loss_term)
+        # print('reg_term', reg_term)
+        # print('gradient',  gradient)
+
+        # change for w0
+        # second_loss_term = math.exp(-Y[n]*old_theta[0])
+        try:
+            second_loss_term = math.exp(-Y[n]*np.dot(old_theta, X[n]))
+        except:
+            second_loss_term = 0
+        first_loss_term = -1.0/(1.0 + second_loss_term)
+        third_loss_term = -1*Y[n]*old_theta[0]
+        gradient_0 = -(first_loss_term*second_loss_term*third_loss_term)
+
+        change = learning_rate*(insert(gradient, 0, gradient_0))
+        new_theta = old_theta - change
+
+        if n == samples-1:
+            epoch +=1
+        n = (n+1)%samples
+    return new_theta
+
 
 
 def transform_y(y):
@@ -74,42 +116,47 @@ def transform_x(x):
         transformed_X.append(np.insert(i, 0, 1))
     return transformed_X
 
-# # parameters
-# name = '1'
-# print '======Training======'
-# # load data from csv files
-# train = loadtxt('data/data'+name+'_train.csv')
-# X = train[:,0:2]
-# transformed_X = transform_x(X)
-# Y = train[:,2:3]
+# parameters
+name = '1'
+print '======Training======'
+# load data from csv files
+train = loadtxt('data/data'+name+'_train.csv')
+X = train[:,0:2]
+transformed_X = transform_x(X)
+Y = train[:,2:3]
+
 # new_y = []
 # for i in range(len(Y)):
 #     new_y.append(Y[i][0])
 #
-# l = LogisticRegression(penalty='l2')
+# l = LogisticRegression(penalty='l2', C=0.01)
 # l.fit(X,new_y)
 # print(l.score(X, Y))
 # print(l.coef_)
 # print(l.intercept_)
-# asd
-#
+# def predictLR(x):
+#     return l.predict(x)
 
-#
-# # Carry out training.
-# w = sgd(transformed_X, Y, 0.00001, 0.01, 10, 1)
-# #
+
+
+# Carry out training.
+# w = new_sgd(transformed_X, Y, 0.001, 0.02, 1, 2)
 # Define the predictLR(x) function, which uses trained parameters
 def predictLR(x):
-    x = np.insert(x, 0, 1)
-    prob = dot_and_sigmoid(x, np.transpose(w))
-    if prob > 0.5:
-        return 1
-    return 0
-
-# plot training results
+    result = []
+    for sample in x:
+        sample = np.insert(sample, 0, 1)
+        prob = dot_and_sigmoid(sample, w)
+        if prob > 0.5:
+            result.append(1)
+        else:
+            result.append(-1)
+    return np.array(result)
+#
+# # plot training results
 # plotDecisionBoundary(X, Y, predictLR, [0.5], title = 'LR Train with L1 regularization and C=10')
 # pl.show()
-#
+
 # print '======Validation======'
 # # load data from csv files
 # validate = loadtxt('data/data'+name+'_validate.csv')
@@ -132,8 +179,6 @@ def predictLR(x):
 # print('test_error', l.score(X,transformed_y))
 
 def one_point_two(C, dataset):
-    def predictLR(x):
-        return l.predict([x])
     # runs L1 and L2 reg on logistic regression with various C
     datamap = {}
     for name in dataset:

@@ -30,6 +30,40 @@ normalized_train_X = normalize(train_X)
 normalized_validate_X = normalize(validate_X)
 normalized_test_X = normalize(test_X)
 
+######################### LOGISTIC REGRESSION ############################
+# add bias term for samples
+def predict_lr(x, w):
+    result = []
+    for sample in x:
+        sample = np.insert(sample, 0, 1)
+        prob = dot_and_sigmoid(sample, w)
+        if prob > 0.5:
+            result.append(1)
+        else:
+            result.append(-1)
+    return np.array(result)
+
+normalized_train_X_lr = transform_x(normalized_train_X)
+w = new_sgd(normalized_train_X_lr, train_Y, 0.001, 0.02, 2, 2)
+test_labels_lr = predict_lr(normalized_test_X, w)
+
+
+# off the shelf implementation
+# l = LogisticRegression(penalty='l2', C=0.01)
+# l.fit(normalized_train_X, train_Y)
+#
+# test_labels_lr = l.predict(normalized_test_X)
+
+
+misclassified = [i for i in range(len(test_Y)) if (i < 150 and test_labels_lr[i] == -1) or (i >= 150 and test_labels_lr[i] == 1)]
+print("MISCLASSIFIED: ", misclassified)
+print(len(misclassified))
+
+for img_idx in misclassified:
+    plt.imshow(normalized_test_X[img_idx].reshape((28,28)))
+    plt.show()
+
+######################### SVM ############################################
 C = 1
 alpha_threshold = 10**(-8)
 # kernel_func = linear_kernel
@@ -56,6 +90,6 @@ print(test_labels_svm)
 misclassified = [i for i in range(len(test_Y)) if (i < 150 and test_labels_svm[i] == -1) or (i >= 150 and test_labels_svm[i] == 1)]
 print("MISCLASSIFIED: ", misclassified)
 
-for img_idx in misclassified:
-    plt.imshow(normalized_test_X[img_idx].reshape((28,28)))
-    plt.show()
+# for img_idx in misclassified:
+#     plt.imshow(normalized_test_X[img_idx].reshape((28,28)))
+#     plt.show()
