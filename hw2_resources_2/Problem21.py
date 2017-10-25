@@ -326,6 +326,6 @@ def linear_kernel(x,y):
     return np.dot(x,y)
 
 def RBF_kernel(gamma):
-    return lambda x, y: np.exp(-1*gamma*np.linalg.norm((x-y))**2)
+    return lambda x, y: np.exp(-1*np.linalg.norm((x-y))**2*gamma)
 
 # w0, wx_product, sv_indices, etas, alphas, saved_X, saved_Y = run_SVM_kernel(C, alpha_threshold, X, Y, None, linear_kernel)
