@@ -15,8 +15,8 @@ Y = train[:, 2:3].copy()
 
 for C in [0.01, 0.1, 1, 10, 100]:
     for g in [0.01, 0.1, 1, 10]:
-# Carry out training, primal and/or dual
-# C = 0.1
+        # Carry out training, primal and/or dual
+        # C = 0.1
         alpha_threshold = 10**(-4)
         kernel_func = RBF_kernel(g)
         # kernel_func = linear_kernel
