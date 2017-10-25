@@ -66,21 +66,23 @@ def new_sgd(X,Y, thresh, learning_rate, reg_factor, norm):
     new_theta = np.array([0.5] * len(X[0]))
     n = 0
     epoch = 0
-    while (epoch < 30):
+    # while (linalg.norm(old_theta-new_theta) > thresh and epoch <70):
+    while(epoch < 50):
         old_theta = copy.deepcopy(new_theta)
         # change for w
+        # second_loss_term = math.exp(-Y[n]*np.dot(old_theta[1:], X[n][1:]))
         try:
-            second_loss_term = math.exp(-Y[n]*np.dot(old_theta[1:], X[n][1:]))
+            second_loss_term = np.exp(-Y[n]*np.dot(old_theta[1:], X[n][1:]))
         except:
             second_loss_term = 0
         first_loss_term = -1.0/(1.0 + second_loss_term)
         third_loss_term = -1*Y[n]*X[n][1:]
         if norm == 2:
-            inner_reg_term = X[n][1:]/np.linalg.norm(old_theta[1:])
+            inner_reg_term = 2*old_theta[1:]
         elif norm ==1:
             inner_reg_term = X[n][1:]/np.linalg.norm(old_theta[1:])
-        reg_term = norm*reg_factor*(inner_reg_term)
-        gradient = -first_loss_term*second_loss_term*third_loss_term + reg_term
+        reg_term = reg_factor*(inner_reg_term)
+        gradient = -(first_loss_term*second_loss_term*third_loss_term) + reg_term
         # print('first_loss_term', first_loss_term)
         # print('second_loss_term', second_loss_term)
         # print('third_loss_term', third_loss_term)
@@ -89,17 +91,17 @@ def new_sgd(X,Y, thresh, learning_rate, reg_factor, norm):
 
         # change for w0
         # second_loss_term = math.exp(-Y[n]*old_theta[0])
+        # second_loss_term = math.exp(-Y[n]*np.dot(old_theta, X[n]))
         try:
-            second_loss_term = math.exp(-Y[n]*np.dot(old_theta, X[n]))
+            # second_loss_term_w0 = math.exp(-Y[n]*old_theta[0])
+            second_loss_term_w0 = np.exp(-Y[n]*np.dot(old_theta, X[n]))
         except:
-            second_loss_term = 0
-        first_loss_term = -1.0/(1.0 + second_loss_term)
-        third_loss_term = -1*Y[n]*old_theta[0]
-        gradient_0 = -(first_loss_term*second_loss_term*third_loss_term)
+            second_loss_term_w0 = 0
+        first_loss_term_w0 = -1.0/(1.0 + second_loss_term_w0)
+        third_loss_term_w0 = -1*Y[n]*old_theta[0]
+        gradient_0 = -(first_loss_term_w0*second_loss_term_w0*third_loss_term_w0)
 
-        change = learning_rate*(insert(gradient, 0, gradient_0))
-        new_theta = old_theta - change
-
+        new_theta = old_theta-learning_rate*(insert(gradient, 0, gradient_0))
         if n == samples-1:
             epoch +=1
         n = (n+1)%samples
@@ -132,7 +134,7 @@ Y = train[:,2:3]
 # for i in range(len(Y)):
 #     new_y.append(Y[i][0])
 #
-# l = LogisticRegression(penalty='l2', C=0.01)
+# l = LogisticRegression(penalty='l2', C=10000000000000000.0)
 # l.fit(X,new_y)
 # print(l.score(X, Y))
 # print(l.coef_)
@@ -143,21 +145,22 @@ Y = train[:,2:3]
 
 
 # Carry out training.
-# w = new_sgd(transformed_X, Y, 0.001, 0.02, 1, 2)
-# Define the predictLR(x) function, which uses trained parameters
-def predictLR(x):
-    result = []
-    for sample in x:
-        sample = np.insert(sample, 0, 1)
-        prob = dot_and_sigmoid(sample, w)
-        if prob > 0.5:
-            result.append(1)
-        else:
-            result.append(-1)
-    return np.array(result)
-#
-# # plot training results
-# plotDecisionBoundary(X, Y, predictLR, [0.5], title = 'LR Train with L1 regularization and C=10')
+# w = new_sgd(transformed_X, Y, 0.00001, 0.02, 0.01, 2)
+# print(w)
+# # Define the predictLR(x) function, which uses trained parameters
+# def predictLR(x):
+#     result = []
+#     for sample in x:
+#         sample = np.insert(sample, 0, 1)
+#         prob = dot_and_sigmoid(sample, w)
+#         if prob > 0.5:
+#             result.append(1)
+#         else:
+#             result.append(-1)
+#     return np.array(result)
+# # #
+# # # # plot training results
+# plotDecisionBoundary(X, Y, predictLR, [0.5], title = 'LR Train with L2 regularization and Lambda = 0')
 # pl.show()
 
 # print '======Validation======'
@@ -203,7 +206,7 @@ def one_point_two(C, dataset):
             # fit on different Cs and then score on the test_set
             for c in C:
                 print('**'+str(c)+'**')
-                l = LogisticRegression(penalty=reg, C=c)
+                l = LogisticRegression(penalty=reg, C=c, intercept_scaling=100)
                 l.fit(train_X,train_Y)
                 # plotDecisionBoundary(train_X, plot_Y, predictLR, [0.5], title = 'LR Train with '+ reg +' regularization and C=' + str(c))
                 # pl.show()
@@ -215,6 +218,7 @@ def one_point_two(C, dataset):
                 datamap[name][reg].append(l.score(test_X, test_Y))
     return datamap
 
+one_point_two([100.0, 10.0, 1.0, 0.1, 0.5, 0.01], ['1', '2', '3', '4'])
 def plots():
     datamap = one_point_two([100.0, 10.0, 1.0, 0.1, 0.5, 0.01], ['1', '2', '3', '4'])
 

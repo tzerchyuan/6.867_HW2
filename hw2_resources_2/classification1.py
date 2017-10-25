@@ -11,9 +11,7 @@ X_1 = train_1[:500]
 X_7 = train_7[:500]
 
 train_X = concatenate((X_1[:200], X_7[:200]))
-print(train_X[:10,:])
 train_Y = [1]*200 + [-1]*200
-print(len(train_Y))
 validate_X = concatenate((X_1[200:350],X_7[200:350]))
 validate_Y = [1]*150 + [-1]*150
 
@@ -44,7 +42,9 @@ def predict_lr(x, w):
     return np.array(result)
 
 normalized_train_X_lr = transform_x(normalized_train_X)
-w = new_sgd(normalized_train_X_lr, train_Y, 0.001, 0.02, 1, 2)
+train_X_lr = transform_x(train_X)
+w = new_sgd(normalized_train_X_lr, train_Y, 0.001, 0.02, 0, 2)
+# w = new_sgd(train_X_lr, train_Y, 0.001, 0.02, 1, 2)
 test_labels_lr = predict_lr(normalized_test_X, w)
 
 
