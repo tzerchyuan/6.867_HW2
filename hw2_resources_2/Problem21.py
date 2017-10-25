@@ -252,9 +252,12 @@ def run_SVM_kernel(C, alpha_threshold, XT, Y, kernel_mat, kernel_func):
     # Use other LP method to calculate w0
 
     # We don't use w anymore; we just incorporate it into the kernel
-    # w = sum([xvals_thresholded[n]*Y[n,0]*X[:,n] for n in range(N)])
-    # print("W: ", w)
 
+    print("##########################################################################################")
+    print("W IS ONLY VALID FOR LINEAR KERNELS!")
+    w = sum([xvals_thresholded[n]*Y[n,0]*X[:,n] for n in range(N)])
+    print("W: ", w)
+    print("##########################################################################################")
     q2 = np.concatenate(([0], np.ones(N)*C))
     # print "q2:"
     # print q2
@@ -313,6 +316,9 @@ def run_SVM_kernel(C, alpha_threshold, XT, Y, kernel_mat, kernel_func):
     # print(str([list(X[:,i]) for i in sv_indices]))
 
     w0 = sol[0]
+
+    print("w0: ", w0)
+    # print("alphas: ", xvals_thresholded.reshape(xvals_thresholded.shape[0]))
     return w0, wx_product, sv_indices, sol[1:], xvals_thresholded, XT, Y
 
 
@@ -322,4 +328,4 @@ def linear_kernel(x,y):
 def RBF_kernel(gamma):
     return lambda x, y: np.exp(-1*gamma*np.linalg.norm((x-y))**2)
 
-# w0, wx_product, sv_indices, etas, alphas = run_SVM_kernel(C, alpha_threshold, X, Y, None, linear_kernel)
+# w0, wx_product, sv_indices, etas, alphas, saved_X, saved_Y = run_SVM_kernel(C, alpha_threshold, X, Y, None, linear_kernel)
